@@ -1,0 +1,311 @@
+{
+  "id": "library",
+  "name": "图书馆",
+  "description": "本地 EPUB、TXT、Markdown 阅读器：段落进度、清晰目录、私人书签与舒适排版。",
+  "version": "1.0.1",
+  "icon": "builtin-extension:library",
+  "scope": "global",
+  "surface": {
+    "kind": "sidebar",
+    "entry": "ui/panel.html",
+    "title": "图书馆"
+  },
+  "domain": {
+    "entry": "domain.mjs",
+    "queries": [
+      "shelf.list",
+      "book.toc",
+      "book.content",
+      "library.search"
+    ],
+    "commands": [
+      "book.import",
+      "book.open",
+      "book.progress",
+      "book.bookmark",
+      "book.status",
+      "book.pin",
+      "book.remove",
+      "reader.settings"
+    ],
+    "events": [
+      "library.changed"
+    ],
+    "queryDefs": [
+      {
+        "id": "shelf.list",
+        "title": "读取书架",
+        "permission": "read",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "q": {
+              "type": "string"
+            }
+          },
+          "required": [],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "book.toc",
+        "title": "读取书籍目录与书签",
+        "permission": "read",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "bookId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "bookId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "book.content",
+        "title": "读取章节正文",
+        "permission": "read",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "bookId": {
+              "type": "string"
+            },
+            "chapterIndex": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "bookId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "library.search",
+        "title": "搜索藏书正文",
+        "permission": "read",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "q": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "q"
+          ],
+          "additionalProperties": false
+        }
+      }
+    ],
+    "commandDefs": [
+      {
+        "id": "book.import",
+        "title": "导入已解析的书籍",
+        "permission": "edit",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "book": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "book"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "book.open",
+        "title": "打开书籍",
+        "permission": "edit",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "bookId": {
+              "type": "string"
+            },
+            "chapterIndex": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "bookId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "book.progress",
+        "title": "保存阅读位置",
+        "permission": "edit",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "bookId": {
+              "type": "string"
+            },
+            "chapterIndex": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "paragraphIndex": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "offset": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "percent": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            }
+          },
+          "required": [
+            "bookId",
+            "chapterIndex",
+            "paragraphIndex",
+            "offset",
+            "percent"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "book.bookmark",
+        "title": "切换段落书签",
+        "permission": "edit",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "bookId": {
+              "type": "string"
+            },
+            "chapterIndex": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "paragraphIndex": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "bookId",
+            "chapterIndex",
+            "paragraphIndex"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "book.status",
+        "title": "设置阅读状态",
+        "permission": "edit",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "bookId": {
+              "type": "string"
+            },
+            "status": {
+              "enum": [
+                "unread",
+                "reading",
+                "finished"
+              ]
+            }
+          },
+          "required": [
+            "bookId",
+            "status"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "book.pin",
+        "title": "置顶藏书",
+        "permission": "edit",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "bookId": {
+              "type": "string"
+            },
+            "pinned": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "bookId",
+            "pinned"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "book.remove",
+        "title": "移出书架",
+        "permission": "dangerous",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "bookId": {
+              "type": "string"
+            }
+          },
+          "required": [
+            "bookId"
+          ],
+          "additionalProperties": false
+        }
+      },
+      {
+        "id": "reader.settings",
+        "title": "保存排版偏好",
+        "permission": "edit",
+        "parameters": {
+          "type": "object",
+          "properties": {
+            "settings": {
+              "type": "object"
+            }
+          },
+          "required": [
+            "settings"
+          ],
+          "additionalProperties": false
+        }
+      }
+    ]
+  },
+  "agent": {
+    "profile": "scheduler-pi",
+    "systemPrompt": "agent.md",
+    "skills": [],
+    "mcp": []
+  },
+  "data": {
+    "workspace": true,
+    "shared": false
+  },
+  "permissions": [
+    "data",
+    "files",
+    "media",
+    "agent.state",
+    "agent.commands",
+    "theme"
+  ]
+}
